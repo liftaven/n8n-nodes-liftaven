@@ -6,9 +6,10 @@ import type {
   INodeProperties,
 } from "n8n-workflow";
 import { NodeConnectionTypes } from "n8n-workflow";
-import { executeOperations, type Operation } from "./transport";
+import { executeOperations, type Operation, type ResourceRoute } from "./transport";
 import operations from "./operations.json";
 import properties from "./properties.json";
+import routes from "./routes.json";
 
 export class Liftaven implements INodeType {
   description: INodeTypeDescription = {
@@ -29,9 +30,10 @@ export class Liftaven implements INodeType {
   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
     return executeOperations(
       this,
-      "https://mcp.liftaven.com/mcp",
+      "https://mcp.liftaven.com",
       "liftavenOAuth2Api",
       operations as unknown as Operation[],
+      routes as Record<string,ResourceRoute>,
     );
   }
 }

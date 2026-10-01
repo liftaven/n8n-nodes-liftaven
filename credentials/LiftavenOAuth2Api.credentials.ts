@@ -18,13 +18,13 @@ export class LiftavenOAuth2Api implements ICredentialType {
       displayName: "Server URL",
       name: "serverUrl",
       type: "hidden",
-      default: "https://mcp.liftaven.com/mcp",
+      default: "https://mcp.liftaven.com/v1",
     },
     {
       displayName: "Resource URL",
       name: "resourceUrl",
       type: "hidden",
-      default: "https://mcp.liftaven.com/mcp",
+      default: "https://mcp.liftaven.com/v1",
     },
   ];
 }

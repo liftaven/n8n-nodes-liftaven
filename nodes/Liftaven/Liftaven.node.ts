@@ -30,7 +30,7 @@ export class Liftaven implements INodeType {
   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
     return executeOperations(
       this,
-      "https://mcp.liftaven.com",
+      "https://api.liftaven.com",
       "liftavenOAuth2Api",
       operations as unknown as Operation[],
       routes as Record<string,ResourceRoute>,

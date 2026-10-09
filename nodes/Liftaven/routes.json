@@ -1,138 +1,138 @@
 {
-  "connection_status": {
-    "method": "GET",
-    "path": "/v1/connections"
-  },
-  "website_list_connections": {
-    "method": "GET",
-    "path": "/v1/websites"
-  },
-  "website_list_content": {
-    "method": "GET",
-    "path": "/v1/websites/:connectionId/content"
-  },
-  "website_read_content": {
-    "method": "GET",
-    "path": "/v1/websites/:connectionId/content/item"
-  },
-  "website_prepare_change": {
-    "method": "POST",
-    "path": "/v1/website-changes"
-  },
-  "website_list_changes": {
-    "method": "GET",
-    "path": "/v1/website-changes"
-  },
-  "gsc_list_properties": {
-    "method": "GET",
-    "path": "/v1/search-console/properties"
-  },
-  "gsc_get_performance": {
-    "method": "GET",
-    "path": "/v1/search-console/performance"
-  },
-  "gsc_get_breakdown": {
-    "method": "GET",
-    "path": "/v1/search-console/breakdown"
-  },
-  "gsc_find_striking_distance": {
-    "method": "GET",
-    "path": "/v1/search-console/striking-distance"
-  },
-  "gsc_list_sitemaps": {
-    "method": "GET",
-    "path": "/v1/search-console/sitemaps"
-  },
-  "gsc_get_account": {
-    "method": "GET",
-    "path": "/v1/search-console/account"
-  },
-  "gsc_submit_sitemap": {
-    "method": "POST",
-    "path": "/v1/search-console/sitemaps"
-  },
-  "ga_list_accounts": {
-    "method": "GET",
-    "path": "/v1/analytics/accounts"
-  },
-  "ga_list_properties": {
-    "method": "GET",
-    "path": "/v1/analytics/properties"
-  },
-  "ga_get_property": {
-    "method": "GET",
-    "path": "/v1/analytics/properties/:propertyId"
-  },
-  "ga_list_data_streams": {
-    "method": "GET",
-    "path": "/v1/analytics/properties/:propertyId/data-streams"
-  },
-  "ga_list_key_events": {
-    "method": "GET",
-    "path": "/v1/analytics/properties/:propertyId/key-events"
-  },
-  "ga_list_custom_dimensions": {
-    "method": "GET",
-    "path": "/v1/analytics/properties/:propertyId/custom-dimensions"
-  },
-  "ga_list_custom_metrics": {
-    "method": "GET",
-    "path": "/v1/analytics/properties/:propertyId/custom-metrics"
-  },
-  "ga_get_data_retention_settings": {
-    "method": "GET",
-    "path": "/v1/analytics/properties/:propertyId/data-retention"
-  },
-  "ga_get_metadata": {
-    "method": "GET",
-    "path": "/v1/analytics/properties/:propertyId/metadata"
-  },
-  "ga_check_compatibility": {
-    "method": "POST",
-    "path": "/v1/analytics/properties/:propertyId/compatibility"
-  },
-  "ga_run_report": {
-    "method": "POST",
-    "path": "/v1/analytics/properties/:propertyId/reports"
-  },
-  "ga_batch_run_reports": {
-    "method": "POST",
-    "path": "/v1/analytics/properties/:propertyId/batch-reports"
-  },
-  "ga_run_realtime_report": {
-    "method": "POST",
-    "path": "/v1/analytics/properties/:propertyId/realtime-reports"
-  },
-  "ga_get_seo_report": {
-    "method": "POST",
-    "path": "/v1/analytics/properties/:propertyId/seo-reports"
-  },
-  "bing_list_sites": {
-    "method": "GET",
-    "path": "/v1/bing/sites"
-  },
-  "bing_get_traffic": {
-    "method": "GET",
-    "path": "/v1/bing/traffic"
-  },
-  "bing_get_query_stats": {
-    "method": "GET",
-    "path": "/v1/bing/queries"
-  },
-  "bing_get_page_stats": {
-    "method": "GET",
-    "path": "/v1/bing/pages"
-  },
-  "bing_get_crawl_stats": {
-    "method": "GET",
-    "path": "/v1/bing/crawl"
-  },
-  "bing_list_sitemaps": {
-    "method": "GET",
-    "path": "/v1/bing/sitemaps"
-  },
-  "bing_submit_sitemap": {
-    "method": "POST",
-    "path": "/v1/bing/sitemaps"
-  }
+	"connection_status": {
+		"method": "GET",
+		"path": "/v1/connections"
+	},
+	"website_list_connections": {
+		"method": "GET",
+		"path": "/v1/websites"
+	},
+	"website_list_content": {
+		"method": "GET",
+		"path": "/v1/websites/:connectionId/content"
+	},
+	"website_read_content": {
+		"method": "GET",
+		"path": "/v1/websites/:connectionId/content/item"
+	},
+	"website_prepare_change": {
+		"method": "POST",
+		"path": "/v1/website-changes"
+	},
+	"website_list_changes": {
+		"method": "GET",
+		"path": "/v1/website-changes"
+	},
+	"gsc_list_properties": {
+		"method": "GET",
+		"path": "/v1/search-console/properties"
+	},
+	"gsc_get_performance": {
+		"method": "GET",
+		"path": "/v1/search-console/performance"
+	},
+	"gsc_get_breakdown": {
+		"method": "GET",
+		"path": "/v1/search-console/breakdown"
+	},
+	"gsc_find_striking_distance": {
+		"method": "GET",
+		"path": "/v1/search-console/striking-distance"
+	},
+	"gsc_list_sitemaps": {
+		"method": "GET",
+		"path": "/v1/search-console/sitemaps"
+	},
+	"gsc_get_account": {
+		"method": "GET",
+		"path": "/v1/search-console/account"
+	},
+	"gsc_submit_sitemap": {
+		"method": "POST",
+		"path": "/v1/search-console/sitemaps"
+	},
+	"ga_list_accounts": {
+		"method": "GET",
+		"path": "/v1/analytics/accounts"
+	},
+	"ga_list_properties": {
+		"method": "GET",
+		"path": "/v1/analytics/properties"
+	},
+	"ga_get_property": {
+		"method": "GET",
+		"path": "/v1/analytics/properties/:propertyId"
+	},
+	"ga_list_data_streams": {
+		"method": "GET",
+		"path": "/v1/analytics/properties/:propertyId/data-streams"
+	},
+	"ga_list_key_events": {
+		"method": "GET",
+		"path": "/v1/analytics/properties/:propertyId/key-events"
+	},
+	"ga_list_custom_dimensions": {
+		"method": "GET",
+		"path": "/v1/analytics/properties/:propertyId/custom-dimensions"
+	},
+	"ga_list_custom_metrics": {
+		"method": "GET",
+		"path": "/v1/analytics/properties/:propertyId/custom-metrics"
+	},
+	"ga_get_data_retention_settings": {
+		"method": "GET",
+		"path": "/v1/analytics/properties/:propertyId/data-retention"
+	},
+	"ga_get_metadata": {
+		"method": "GET",
+		"path": "/v1/analytics/properties/:propertyId/metadata"
+	},
+	"ga_check_compatibility": {
+		"method": "POST",
+		"path": "/v1/analytics/properties/:propertyId/compatibility"
+	},
+	"ga_run_report": {
+		"method": "POST",
+		"path": "/v1/analytics/properties/:propertyId/reports"
+	},
+	"ga_batch_run_reports": {
+		"method": "POST",
+		"path": "/v1/analytics/properties/:propertyId/batch-reports"
+	},
+	"ga_run_realtime_report": {
+		"method": "POST",
+		"path": "/v1/analytics/properties/:propertyId/realtime-reports"
+	},
+	"ga_get_seo_report": {
+		"method": "POST",
+		"path": "/v1/analytics/properties/:propertyId/seo-reports"
+	},
+	"bing_list_sites": {
+		"method": "GET",
+		"path": "/v1/bing/sites"
+	},
+	"bing_get_traffic": {
+		"method": "GET",
+		"path": "/v1/bing/traffic"
+	},
+	"bing_get_query_stats": {
+		"method": "GET",
+		"path": "/v1/bing/queries"
+	},
+	"bing_get_page_stats": {
+		"method": "GET",
+		"path": "/v1/bing/pages"
+	},
+	"bing_get_crawl_stats": {
+		"method": "GET",
+		"path": "/v1/bing/crawl"
+	},
+	"bing_list_sitemaps": {
+		"method": "GET",
+		"path": "/v1/bing/sitemaps"
+	},
+	"bing_submit_sitemap": {
+		"method": "POST",
+		"path": "/v1/bing/sitemaps"
+	}
 }

@@ -1,46 +1,40 @@
 {
-  "name": "Liftaven account check",
-  "nodes": [
-    {
-      "parameters": {},
-      "id": "manual",
-      "name": "Manual Trigger",
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        0,
-        0
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "connection_status"
-      },
-      "id": "account",
-      "name": "Liftaven",
-      "type": "n8n-nodes-liftaven.liftaven",
-      "typeVersion": 1,
-      "position": [
-        260,
-        0
-      ]
-    }
-  ],
-  "connections": {
-    "Manual Trigger": {
-      "main": [
-        [
-          {
-            "node": "Liftaven",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  },
-  "active": false,
-  "settings": {
-    "executionOrder": "v1"
-  }
+	"name": "Liftaven account check",
+	"nodes": [
+		{
+			"parameters": {},
+			"id": "manual",
+			"name": "Manual Trigger",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"position": [0, 0]
+		},
+		{
+			"parameters": {
+				"operation": "connection_status"
+			},
+			"id": "account",
+			"name": "Liftaven",
+			"type": "n8n-nodes-liftaven.liftaven",
+			"typeVersion": 1,
+			"position": [260, 0]
+		}
+	],
+	"connections": {
+		"Manual Trigger": {
+			"main": [
+				[
+					{
+						"node": "Liftaven",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"active": false,
+	"settings": {
+		"executionOrder": "v1"
+	}
 }

@@ -1,20 +1,18 @@
 {
-  "node": "n8n-nodes-liftaven.liftaven",
-  "nodeVersion": "1.0",
-  "codexVersion": "1.0",
-  "categories": [
-    "Productivity"
-  ],
-  "resources": {
-    "credentialDocumentation": [
-      {
-        "url": "https://github.com/liftaven/n8n-nodes-liftaven#authentication"
-      }
-    ],
-    "primaryDocumentation": [
-      {
-        "url": "https://github.com/liftaven/n8n-nodes-liftaven#readme"
-      }
-    ]
-  }
+	"node": "n8n-nodes-liftaven.liftaven",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Productivity"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://github.com/liftaven/n8n-nodes-liftaven#authentication"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/liftaven/n8n-nodes-liftaven#readme"
+			}
+		]
+	}
 }

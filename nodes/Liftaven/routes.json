@@ -9,7 +9,12 @@
 	},
 	"website_list_content": {
 		"method": "GET",
-		"path": "/v1/websites/:connectionId/content"
+		"path": "/v1/websites/:connectionId/content",
+		"pagination": {
+			"kind": "website",
+			"items": ["pages", "posts", "tree", "items", "list", "result.list", "data.pages", "data"],
+			"pageSize": 25
+		}
 	},
 	"website_read_content": {
 		"method": "GET",
@@ -33,7 +38,12 @@
 	},
 	"gsc_get_breakdown": {
 		"method": "GET",
-		"path": "/v1/search-console/breakdown"
+		"path": "/v1/search-console/breakdown",
+		"pagination": {
+			"kind": "gsc",
+			"items": ["rows"],
+			"pageSize": 200
+		}
 	},
 	"gsc_find_striking_distance": {
 		"method": "GET",
@@ -53,11 +63,21 @@
 	},
 	"ga_list_accounts": {
 		"method": "GET",
-		"path": "/v1/analytics/accounts"
+		"path": "/v1/analytics/accounts",
+		"pagination": {
+			"kind": "token",
+			"items": ["accounts"],
+			"pageSize": 200
+		}
 	},
 	"ga_list_properties": {
 		"method": "GET",
-		"path": "/v1/analytics/properties"
+		"path": "/v1/analytics/properties",
+		"pagination": {
+			"kind": "token",
+			"items": ["properties"],
+			"pageSize": 200
+		}
 	},
 	"ga_get_property": {
 		"method": "GET",
@@ -65,19 +85,39 @@
 	},
 	"ga_list_data_streams": {
 		"method": "GET",
-		"path": "/v1/analytics/properties/:propertyId/data-streams"
+		"path": "/v1/analytics/properties/:propertyId/data-streams",
+		"pagination": {
+			"kind": "token",
+			"items": ["dataStreams"],
+			"pageSize": 200
+		}
 	},
 	"ga_list_key_events": {
 		"method": "GET",
-		"path": "/v1/analytics/properties/:propertyId/key-events"
+		"path": "/v1/analytics/properties/:propertyId/key-events",
+		"pagination": {
+			"kind": "token",
+			"items": ["keyEvents"],
+			"pageSize": 200
+		}
 	},
 	"ga_list_custom_dimensions": {
 		"method": "GET",
-		"path": "/v1/analytics/properties/:propertyId/custom-dimensions"
+		"path": "/v1/analytics/properties/:propertyId/custom-dimensions",
+		"pagination": {
+			"kind": "token",
+			"items": ["customDimensions"],
+			"pageSize": 200
+		}
 	},
 	"ga_list_custom_metrics": {
 		"method": "GET",
-		"path": "/v1/analytics/properties/:propertyId/custom-metrics"
+		"path": "/v1/analytics/properties/:propertyId/custom-metrics",
+		"pagination": {
+			"kind": "token",
+			"items": ["customMetrics"],
+			"pageSize": 200
+		}
 	},
 	"ga_get_data_retention_settings": {
 		"method": "GET",
@@ -93,7 +133,12 @@
 	},
 	"ga_run_report": {
 		"method": "POST",
-		"path": "/v1/analytics/properties/:propertyId/reports"
+		"path": "/v1/analytics/properties/:propertyId/reports",
+		"pagination": {
+			"kind": "report",
+			"items": ["rows"],
+			"pageSize": 200
+		}
 	},
 	"ga_batch_run_reports": {
 		"method": "POST",
@@ -101,11 +146,21 @@
 	},
 	"ga_run_realtime_report": {
 		"method": "POST",
-		"path": "/v1/analytics/properties/:propertyId/realtime-reports"
+		"path": "/v1/analytics/properties/:propertyId/realtime-reports",
+		"pagination": {
+			"kind": "bounded",
+			"items": ["rows"],
+			"pageSize": 10000
+		}
 	},
 	"ga_get_seo_report": {
 		"method": "POST",
-		"path": "/v1/analytics/properties/:propertyId/seo-reports"
+		"path": "/v1/analytics/properties/:propertyId/seo-reports",
+		"pagination": {
+			"kind": "report",
+			"items": ["rows"],
+			"pageSize": 200
+		}
 	},
 	"bing_list_sites": {
 		"method": "GET",
@@ -117,11 +172,21 @@
 	},
 	"bing_get_query_stats": {
 		"method": "GET",
-		"path": "/v1/bing/queries"
+		"path": "/v1/bing/queries",
+		"pagination": {
+			"kind": "bounded",
+			"items": ["rows"],
+			"pageSize": 200
+		}
 	},
 	"bing_get_page_stats": {
 		"method": "GET",
-		"path": "/v1/bing/pages"
+		"path": "/v1/bing/pages",
+		"pagination": {
+			"kind": "bounded",
+			"items": ["rows"],
+			"pageSize": 200
+		}
 	},
 	"bing_get_crawl_stats": {
 		"method": "GET",

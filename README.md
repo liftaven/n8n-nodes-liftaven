@@ -57,7 +57,7 @@ Choose a **Resource**, then an **Operation**. Only operations and input fields f
 
 ## Workflow behavior
 
-Each input item makes one API request and produces one linked output item. Optional pagination fields can be passed through the node's options; list responses retain their next-page cursor or offset. Write operations require the node's explicit confirmation switch. Failed requests stop the workflow unless **Continue On Fail** is enabled. HTTP errors are summarized without including credentials or raw request headers.
+Each input item produces one linked output item. Paginated list/report operations provide Return All or Limit and follow paging tokens internally, retaining response envelopes, report headers and provider warnings. Selected write operations run without an extra confirmation switch. Failed requests stop the workflow unless **Continue On Fail** is enabled. HTTP errors are summarized without including credentials or raw request headers.
 
 Requests use the fixed product API origin, encode resource identifiers, and do not follow redirects. Use a dedicated account for automation when you want separate access and data. Account ownership, workspace permissions, billing limits, and entitlement checks are enforced by the product API.
 
@@ -73,10 +73,16 @@ MIT license.
 
 The request origin and OAuth resource are the product API shown above. GET reads a resource, POST creates or requests an explicitly confirmed action, PATCH updates, and DELETE removes the selected owned resource. The node does not forward requests to a protocol server. Authentication, permissions and ownership are enforced before the API executes an operation.
 
-## Release checks (3.1.0)
+## Release checks (3.2.0)
 
 Resource and Operation definitions are explicit in the TypeScript node source. This minor update preserves API endpoints, credential types and operation identifiers. Every publication must pass Prettier, the official n8n node CLI linter with zero warnings, the runtime tests, and the n8n community package scanner against both TypeScript source and compiled JavaScript. GitHub Actions runs these checks before publishing with npm provenance.
 
 Run `npm ci --ignore-scripts`, `npm test`, and `npm run review` before proposing a release.
 
 Liftaven follows n8n's default of 50 for newly added optional Limit fields and masks cursor/token fields in the editor. Saved workflow parameters retain their existing values; the API schema defaults and server pagination behavior are unchanged.
+
+## Pagination behavior
+
+Google Analytics Admin lists follow nextPageToken. Core/SEO reports follow pagination.nextOffset, including POST request bodies; Search Console breakdowns follow hasMore and the actual returned row count. Website content follows the provider response offsets/totals and combines page/file arrays. Repeated pages fail explicitly rather than silently claiming complete results. Provider permissions, plan limits, truncation and sampling still apply.
+
+Bing query/page aggregates and Analytics realtime reports do not support paging in the product API. They expose a bounded Limit (Bing: 200, realtime: 10,000 before product plan caps), not a misleading Return All switch. Core report batches retain their independent report inputs. Pagination never sums distinct-user metrics, rates or totals.

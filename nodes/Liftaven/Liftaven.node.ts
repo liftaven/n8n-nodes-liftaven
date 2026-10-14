@@ -9,20 +9,34 @@ import { executeOperations, type Operation, type ResourceRoute } from './transpo
 import operations from './operations.json';
 import routes from './routes.json';
 
+// Official provider names requested by n8n manual review.
+const BING_WEBMASTER_TOOLS = 'Bing Webmaster Tools';
+const GOOGLE_ANALYTICS = 'Google Analytics';
+
 export class Liftaven implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Liftaven',
 		name: 'liftaven',
-		icon: { light: 'file:liftaven.svg', dark: 'file:liftaven.svg' },
+		icon: {
+			light: 'file:liftaven.svg',
+			dark: 'file:liftaven.svg',
+		},
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["resource"] + ": " + $parameter["operation"]}}',
 		description: 'Automate your Liftaven account',
-		defaults: { name: 'Liftaven' },
+		defaults: {
+			name: 'Liftaven',
+		},
 		inputs: [NodeConnectionTypes.Main],
 		outputs: [NodeConnectionTypes.Main],
 		usableAsTool: true,
-		credentials: [{ name: 'liftavenOAuth2Api', required: true }],
+		credentials: [
+			{
+				name: 'liftavenOAuth2Api',
+				required: true,
+			},
+		],
 		properties: [
 			{
 				displayName: 'Resource',
@@ -31,7 +45,8 @@ export class Liftaven implements INodeType {
 				noDataExpression: true,
 				options: [
 					{
-						name: 'Bing Webmaster Tool',
+						// Product proper name; n8n manual review explicitly requires the plural.
+						name: BING_WEBMASTER_TOOLS,
 						value: 'bing',
 					},
 					{
@@ -39,7 +54,8 @@ export class Liftaven implements INodeType {
 						value: 'connections',
 					},
 					{
-						name: 'Google Analytic',
+						// Official Google product name.
+						name: GOOGLE_ANALYTICS,
 						value: 'analytics',
 					},
 					{
@@ -193,49 +209,49 @@ export class Liftaven implements INodeType {
 						name: 'GA List Accounts',
 						value: 'ga_list_accounts',
 						description:
-							'List the Google Analytics accounts this Google connection can access. Follow nextPageToken with unchanged arguments until absent; one call returns one page. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
+							'List the Google Analytics accounts this Google connection can access. Pagination is handled automatically. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
 						action: 'Ga list accounts in liftaven',
 					},
 					{
 						name: 'GA List Custom Dimensions',
 						value: 'ga_list_custom_dimensions',
 						description:
-							'Read registered custom dimension scope and parameter names, including archived configuration where returned by Google. Follow nextPageToken with unchanged arguments until absent; one call returns one page. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
+							'Read registered custom dimension scope and parameter names, including archived configuration where returned by Google. Pagination is handled automatically. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
 						action: 'Ga list custom dimensions in liftaven',
 					},
 					{
 						name: 'GA List Custom Metrics',
 						value: 'ga_list_custom_metrics',
 						description:
-							'Read registered custom metric scope, units and parameter names. Follow nextPageToken with unchanged arguments until absent; one call returns one page. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
+							'Read registered custom metric scope, units and parameter names. Pagination is handled automatically. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
 						action: 'Ga list custom metrics in liftaven',
 					},
 					{
 						name: 'GA List Data Streams',
 						value: 'ga_list_data_streams',
 						description:
-							'Read web/app streams, default website URLs and measurement IDs to identify what is being measured. No Measurement Protocol secrets are exposed. Follow nextPageToken with unchanged arguments until absent; one call returns one page. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
+							'Read web/app streams, default website URLs and measurement IDs to identify what is being measured. No Measurement Protocol secrets are exposed. Pagination is handled automatically. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
 						action: 'Ga list data streams in liftaven',
 					},
 					{
 						name: 'GA List Key Events',
 						value: 'ga_list_key_events',
 						description:
-							'Read configured key events (formerly conversions), counting method and default values. Establish what counts as a business outcome before interpreting keyEvents or revenue. Follow nextPageToken with unchanged arguments until absent; one call returns one page. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
+							'Read configured key events (formerly conversions), counting method and default values. Establish what counts as a business outcome before interpreting keyEvents or revenue. Pagination is handled automatically. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
 						action: 'Ga list key events in liftaven',
 					},
 					{
 						name: 'GA List Properties',
 						value: 'ga_list_properties',
 						description:
-							'Start here. Return GA4 property IDs and account names from accountSummaries. Check data streams to identify the website; display names are not domains. Pagination is by account summary. Follow nextPageToken with unchanged arguments until absent; one call returns one page. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
+							'Start here. Return GA4 property IDs and account names from accountSummaries. Check data streams to identify the website; display names are not domains. Pagination is by account summary. Pagination is handled automatically. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
 						action: 'Ga list properties in liftaven',
 					},
 					{
 						name: 'GA Run Realtime Report',
 						value: 'ga_run_realtime_report',
 						description:
-							'Read recent activity to diagnose whether tracking is receiving events. Defaults to the last 30 minutes; 30\u201359 minutes requires Analytics 360. Realtime supports fewer fields and cannot establish SEO impact. There is no offset pagination or response cache. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
+							'Read recent activity to diagnose whether tracking is receiving events. Defaults to the last 30 minutes; 30–59 minutes requires Analytics 360. Realtime supports fewer fields and cannot establish SEO impact. There is no offset pagination or response cache. Optional googleAccountId selects a Google connection from connection_status. Liftaven plan date and row limits apply',
 						action: 'Ga run realtime report in liftaven',
 					},
 					{
@@ -298,7 +314,7 @@ export class Liftaven implements INodeType {
 						name: 'GSC List Sitemaps',
 						value: 'gsc_list_sitemaps',
 						description:
-							'Sitemaps submitted for a property, with submitted URL counts, error and warning counts, and when Google last downloaded each one. Read-only in itself \u2014 use submit_sitemap to register a new one. Nothing here can delete a sitemap',
+							'Sitemaps submitted for a property, with submitted URL counts, error and warning counts, and when Google last downloaded each one. Read-only in itself — use submit_sitemap to register a new one. Nothing here can delete a sitemap',
 						action: 'Gsc list sitemaps in liftaven',
 					},
 					{
@@ -380,33 +396,6 @@ export class Liftaven implements INodeType {
 				},
 			},
 			{
-				displayName:
-					'This operation changes data or may use account credits. Review the inputs and the product permissions before running this workflow.',
-				name: 'writeNotice',
-				type: 'notice',
-				default: '',
-				displayOptions: {
-					show: {
-						operation: ['bing_submit_sitemap', 'gsc_submit_sitemap', 'website_prepare_change'],
-						resource: ['bing', 'search-console', 'website-changes'],
-					},
-				},
-			},
-			{
-				displayName: 'Confirm Write Operation',
-				name: 'confirmWrite',
-				type: 'boolean',
-				default: false,
-				description:
-					'Whether you authorize this workflow to run the selected write operation, including any applicable product credits',
-				displayOptions: {
-					show: {
-						operation: ['bing_submit_sitemap', 'gsc_submit_sitemap', 'website_prepare_change'],
-						resource: ['bing', 'search-console', 'website-changes'],
-					},
-				},
-			},
-			{
 				displayName: 'Site Url',
 				name: 'bing_get_crawl_stats__siteUrl',
 				type: 'string',
@@ -478,14 +467,6 @@ export class Liftaven implements INodeType {
 						description: 'Trailing window. Defaults to 28 days.',
 						typeOptions: {},
 					},
-					{
-						displayName: 'Limit',
-						name: 'limit',
-						type: 'number',
-						default: 50,
-						description: 'Max number of results to return',
-						typeOptions: {},
-					},
 				],
 			},
 			{
@@ -521,14 +502,6 @@ export class Liftaven implements INodeType {
 						type: 'number',
 						default: 0,
 						description: 'Trailing window. Defaults to 28 days.',
-						typeOptions: {},
-					},
-					{
-						displayName: 'Limit',
-						name: 'limit',
-						type: 'number',
-						default: 50,
-						description: 'Max number of results to return',
 						typeOptions: {},
 					},
 				],
@@ -1006,30 +979,6 @@ export class Liftaven implements INodeType {
 							'Owned Google connection ID from connection_status; defaults to the authorising login',
 					},
 					{
-						displayName: 'Limit',
-						name: 'limit',
-						type: 'number',
-						default: 50,
-						description: 'Max number of results to return',
-						typeOptions: {
-							minValue: 1,
-							maxValue: 10000,
-							numberPrecision: 0,
-						},
-					},
-					{
-						displayName: 'Offset',
-						name: 'offset',
-						type: 'number',
-						default: 0,
-						description: 'The offset for this operation',
-						typeOptions: {
-							minValue: 0,
-							maxValue: 9007199254740991,
-							numberPrecision: 0,
-						},
-					},
-					{
 						displayName: 'Start Date',
 						name: 'startDate',
 						type: 'string',
@@ -1077,26 +1026,6 @@ export class Liftaven implements INodeType {
 						description:
 							'Owned Google connection ID from connection_status; defaults to the authorising login',
 					},
-					{
-						displayName: 'Page Size',
-						name: 'pageSize',
-						type: 'number',
-						default: 200,
-						description: 'The page size for this operation',
-						typeOptions: {
-							minValue: 1,
-							maxValue: 200,
-							numberPrecision: 0,
-						},
-					},
-					{
-						displayName: 'Page Token',
-						name: 'pageToken',
-						type: 'string',
-						typeOptions: { password: true },
-						default: '',
-						description: 'The page token for this operation',
-					},
 				],
 			},
 			{
@@ -1134,26 +1063,6 @@ export class Liftaven implements INodeType {
 						default: '',
 						description:
 							'Owned Google connection ID from connection_status; defaults to the authorising login',
-					},
-					{
-						displayName: 'Page Size',
-						name: 'pageSize',
-						type: 'number',
-						default: 200,
-						description: 'The page size for this operation',
-						typeOptions: {
-							minValue: 1,
-							maxValue: 200,
-							numberPrecision: 0,
-						},
-					},
-					{
-						displayName: 'Page Token',
-						name: 'pageToken',
-						type: 'string',
-						typeOptions: { password: true },
-						default: '',
-						description: 'The page token for this operation',
 					},
 				],
 			},
@@ -1193,26 +1102,6 @@ export class Liftaven implements INodeType {
 						description:
 							'Owned Google connection ID from connection_status; defaults to the authorising login',
 					},
-					{
-						displayName: 'Page Size',
-						name: 'pageSize',
-						type: 'number',
-						default: 200,
-						description: 'The page size for this operation',
-						typeOptions: {
-							minValue: 1,
-							maxValue: 200,
-							numberPrecision: 0,
-						},
-					},
-					{
-						displayName: 'Page Token',
-						name: 'pageToken',
-						type: 'string',
-						typeOptions: { password: true },
-						default: '',
-						description: 'The page token for this operation',
-					},
 				],
 			},
 			{
@@ -1250,26 +1139,6 @@ export class Liftaven implements INodeType {
 						default: '',
 						description:
 							'Owned Google connection ID from connection_status; defaults to the authorising login',
-					},
-					{
-						displayName: 'Page Size',
-						name: 'pageSize',
-						type: 'number',
-						default: 200,
-						description: 'The page size for this operation',
-						typeOptions: {
-							minValue: 1,
-							maxValue: 200,
-							numberPrecision: 0,
-						},
-					},
-					{
-						displayName: 'Page Token',
-						name: 'pageToken',
-						type: 'string',
-						typeOptions: { password: true },
-						default: '',
-						description: 'The page token for this operation',
 					},
 				],
 			},
@@ -1309,26 +1178,6 @@ export class Liftaven implements INodeType {
 						description:
 							'Owned Google connection ID from connection_status; defaults to the authorising login',
 					},
-					{
-						displayName: 'Page Size',
-						name: 'pageSize',
-						type: 'number',
-						default: 200,
-						description: 'The page size for this operation',
-						typeOptions: {
-							minValue: 1,
-							maxValue: 200,
-							numberPrecision: 0,
-						},
-					},
-					{
-						displayName: 'Page Token',
-						name: 'pageToken',
-						type: 'string',
-						typeOptions: { password: true },
-						default: '',
-						description: 'The page token for this operation',
-					},
 				],
 			},
 			{
@@ -1351,26 +1200,6 @@ export class Liftaven implements INodeType {
 						default: '',
 						description:
 							'Owned Google connection ID from connection_status; defaults to the authorising login',
-					},
-					{
-						displayName: 'Page Size',
-						name: 'pageSize',
-						type: 'number',
-						default: 200,
-						description: 'The page size for this operation',
-						typeOptions: {
-							minValue: 1,
-							maxValue: 200,
-							numberPrecision: 0,
-						},
-					},
-					{
-						displayName: 'Page Token',
-						name: 'pageToken',
-						type: 'string',
-						typeOptions: { password: true },
-						default: '',
-						description: 'The page token for this operation',
 					},
 				],
 			},
@@ -1424,18 +1253,6 @@ export class Liftaven implements INodeType {
 						default: '',
 						description:
 							'Owned Google connection ID from connection_status; defaults to the authorising login',
-					},
-					{
-						displayName: 'Limit',
-						name: 'limit',
-						type: 'number',
-						default: 50,
-						description: 'Max number of results to return',
-						typeOptions: {
-							minValue: 1,
-							maxValue: 10000,
-							numberPrecision: 0,
-						},
 					},
 					{
 						displayName: 'Metric Filter',
@@ -1566,18 +1383,6 @@ export class Liftaven implements INodeType {
 						description: 'Whether the keep empty rows for this operation',
 					},
 					{
-						displayName: 'Limit',
-						name: 'limit',
-						type: 'number',
-						default: 50,
-						description: 'Max number of results to return',
-						typeOptions: {
-							minValue: 1,
-							maxValue: 10000,
-							numberPrecision: 0,
-						},
-					},
-					{
 						displayName: 'Metric Aggregations',
 						name: 'metricAggregations',
 						type: 'json',
@@ -1591,18 +1396,6 @@ export class Liftaven implements INodeType {
 						default: '{}',
 						description:
 							'Native GA FilterExpression applied after aggregation, e.g. sessions GREATER_THAN 20',
-					},
-					{
-						displayName: 'Offset',
-						name: 'offset',
-						type: 'number',
-						default: 0,
-						description: 'The offset for this operation',
-						typeOptions: {
-							minValue: 0,
-							maxValue: 9007199254740991,
-							numberPrecision: 0,
-						},
 					},
 					{
 						displayName: 'Order Bys',
@@ -1764,23 +1557,6 @@ export class Liftaven implements INodeType {
 								value: 'searchAppearance',
 							},
 						],
-					},
-					{
-						displayName: 'Limit',
-						name: 'limit',
-						type: 'number',
-						default: 50,
-						description: 'Max number of results to return',
-						typeOptions: {},
-					},
-					{
-						displayName: 'Offset',
-						name: 'offset',
-						type: 'number',
-						default: 0,
-						description:
-							'Zero-based row offset, for reading past the first page. Rows are ordered by clicks descending, so a large offset reaches the long tail.',
-						typeOptions: {},
 					},
 					{
 						displayName: 'Range',
@@ -1989,32 +1765,6 @@ export class Liftaven implements INodeType {
 				},
 			},
 			{
-				displayName: 'Additional Fields',
-				name: 'options_website_list_content',
-				type: 'collection',
-				placeholder: 'Add Field',
-				default: {},
-				displayOptions: {
-					show: {
-						operation: ['website_list_content'],
-						resource: ['websites'],
-					},
-				},
-				options: [
-					{
-						displayName: 'Offset',
-						name: 'offset',
-						type: 'number',
-						default: 0,
-						description: 'The offset for this operation',
-						typeOptions: {
-							minValue: 0,
-							numberPrecision: 0,
-						},
-					},
-				],
-			},
-			{
 				displayName: 'Connection ID',
 				name: 'website_prepare_change__connectionId',
 				type: 'string',
@@ -2120,8 +1870,373 @@ export class Liftaven implements INodeType {
 					},
 				},
 			},
+			{
+				displayName: 'Return All',
+				name: 'returnAll',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return all results or only up to a given limit',
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_list_accounts'],
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Max number of results to return',
+				typeOptions: {
+					minValue: 1,
+					numberPrecision: 0,
+				},
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_list_accounts'],
+						returnAll: [false],
+					},
+				},
+			},
+			{
+				displayName: 'Return All',
+				name: 'returnAll',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return all results or only up to a given limit',
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_list_properties'],
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Max number of results to return',
+				typeOptions: {
+					minValue: 1,
+					numberPrecision: 0,
+				},
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_list_properties'],
+						returnAll: [false],
+					},
+				},
+			},
+			{
+				displayName: 'Return All',
+				name: 'returnAll',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return all results or only up to a given limit',
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_list_data_streams'],
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Max number of results to return',
+				typeOptions: {
+					minValue: 1,
+					numberPrecision: 0,
+				},
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_list_data_streams'],
+						returnAll: [false],
+					},
+				},
+			},
+			{
+				displayName: 'Return All',
+				name: 'returnAll',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return all results or only up to a given limit',
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_list_key_events'],
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Max number of results to return',
+				typeOptions: {
+					minValue: 1,
+					numberPrecision: 0,
+				},
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_list_key_events'],
+						returnAll: [false],
+					},
+				},
+			},
+			{
+				displayName: 'Return All',
+				name: 'returnAll',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return all results or only up to a given limit',
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_list_custom_dimensions'],
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Max number of results to return',
+				typeOptions: {
+					minValue: 1,
+					numberPrecision: 0,
+				},
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_list_custom_dimensions'],
+						returnAll: [false],
+					},
+				},
+			},
+			{
+				displayName: 'Return All',
+				name: 'returnAll',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return all results or only up to a given limit',
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_list_custom_metrics'],
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Max number of results to return',
+				typeOptions: {
+					minValue: 1,
+					numberPrecision: 0,
+				},
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_list_custom_metrics'],
+						returnAll: [false],
+					},
+				},
+			},
+			{
+				displayName: 'Return All',
+				name: 'returnAll',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return all results or only up to a given limit',
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_run_report'],
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Max number of results to return',
+				typeOptions: {
+					minValue: 1,
+					numberPrecision: 0,
+				},
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_run_report'],
+						returnAll: [false],
+					},
+				},
+			},
+			{
+				displayName: 'Return All',
+				name: 'returnAll',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return all results or only up to a given limit',
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_get_seo_report'],
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Max number of results to return',
+				typeOptions: {
+					minValue: 1,
+					numberPrecision: 0,
+				},
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_get_seo_report'],
+						returnAll: [false],
+					},
+				},
+			},
+			{
+				displayName: 'Return All',
+				name: 'returnAll',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return all results or only up to a given limit',
+				displayOptions: {
+					show: {
+						resource: ['search-console'],
+						operation: ['gsc_get_breakdown'],
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Max number of results to return',
+				typeOptions: {
+					minValue: 1,
+					numberPrecision: 0,
+				},
+				displayOptions: {
+					show: {
+						resource: ['search-console'],
+						operation: ['gsc_get_breakdown'],
+						returnAll: [false],
+					},
+				},
+			},
+			{
+				displayName: 'Return All',
+				name: 'returnAll',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return all results or only up to a given limit',
+				displayOptions: {
+					show: {
+						resource: ['websites'],
+						operation: ['website_list_content'],
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Max number of results to return',
+				typeOptions: {
+					minValue: 1,
+					numberPrecision: 0,
+				},
+				displayOptions: {
+					show: {
+						resource: ['websites'],
+						operation: ['website_list_content'],
+						returnAll: [false],
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Max number of results to return',
+				typeOptions: {
+					minValue: 1,
+					numberPrecision: 0,
+					maxValue: 200,
+				},
+				displayOptions: {
+					show: {
+						resource: ['bing'],
+						operation: ['bing_get_page_stats'],
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Max number of results to return',
+				typeOptions: {
+					minValue: 1,
+					numberPrecision: 0,
+					maxValue: 200,
+				},
+				displayOptions: {
+					show: {
+						resource: ['bing'],
+						operation: ['bing_get_query_stats'],
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Max number of results to return',
+				typeOptions: {
+					minValue: 1,
+					numberPrecision: 0,
+					maxValue: 10000,
+				},
+				displayOptions: {
+					show: {
+						resource: ['analytics'],
+						operation: ['ga_run_realtime_report'],
+					},
+				},
+			},
 		],
 	};
+
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		return executeOperations(
 			this,

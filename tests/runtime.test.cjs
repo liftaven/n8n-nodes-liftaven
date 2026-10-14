@@ -8,7 +8,7 @@ const Node = Object.values(require(file))[0],
 const folder = path.dirname(require.resolve(file));
 const operations = require(path.join(folder, 'operations.json')),
 	routes = require(path.join(folder, 'routes.json'));
-const { parseArgument } = require(path.join(folder, 'transport.js'));
+const { parseArgument, requestPages } = require(path.join(folder, 'transport.js'));
 function sample(schema) {
 	const type = Array.isArray(schema.type) ? schema.type.find((t) => t !== 'null') : schema.type;
 	if (schema.enum) return schema.enum[0];
@@ -63,7 +63,10 @@ function context(
 }
 test('each operation makes one native REST request with no MCP handshake, headers or envelope', async () => {
 	for (const op of operations) {
-		const { ctx, calls } = context(op);
+		const paging = routes[op.name].pagination;
+		const expected = { ok: true };
+		if (paging) expected[paging.items[0]] = [];
+		const { ctx, calls } = context(op, { response: { statusCode: 200, body: expected } });
 		const result = await node.execute.call(ctx);
 		assert.equal(calls.length, 1, op.name);
 		const { credential, options } = calls[0];
@@ -77,7 +80,7 @@ test('each operation makes one native REST request with no MCP handshake, header
 		assert.equal(options.headers.Accept, 'application/json');
 		assert(!JSON.stringify(options).includes('jsonrpc'));
 		assert(!JSON.stringify(options.headers).includes('MCP'));
-		assert.deepEqual(result[0][0].json, { ok: true });
+		assert.equal(result[0][0].json.ok, true);
 	}
 });
 test('links outputs to the corresponding input item', async () => {
@@ -101,22 +104,11 @@ test('encodes identifiers without exposing them as path or query structure', asy
 	assert.equal(new URL(calls[0].options.url).hash, '');
 	assert(!calls[0].options.body?.[key]);
 });
-test('uses query pagination on GET without a request body', async () => {
-	const op = operations.find(
-		(o) => routes[o.name].method === 'GET' && o.inputSchema.properties?.offset,
-	);
-	if (!op) return;
-	const { ctx, calls } = context(op, { params: { ['options_' + op.name]: { offset: 50 } } });
-	await node.execute.call(ctx);
-	assert.equal(new URL(calls[0].options.url).searchParams.get('offset'), '50');
-	assert.equal(calls[0].options.body, undefined);
-});
-test('requires explicit confirmation before mutations', async () => {
+test('writes do not require an extra confirmation', async () => {
 	const op = operations.find((o) => o.annotations?.readOnlyHint !== true);
-	if (!op) return;
 	const { ctx, calls } = context(op, { confirm: false });
-	await assert.rejects(node.execute.call(ctx), /confirmation/);
-	assert.equal(calls.length, 0);
+	await node.execute.call(ctx);
+	assert.equal(calls.length, 1);
 });
 test('invalid required values fail before a network request', async () => {
 	const op = operations.find((o) => (o.inputSchema.required ?? []).length);
@@ -221,4 +213,158 @@ test('n8n resolves each resource to its own operation and visible required field
 			}
 		}
 	}
+});
+
+function pagesContext(pages) {
+	const calls = [];
+	const ctx = {
+		getNode: () => ({
+			name: 'Test',
+			type: 'test',
+			parameters: {},
+			typeVersion: 1,
+			position: [0, 0],
+		}),
+		helpers: {
+			httpRequestWithAuthentication: async (c, o) => {
+				calls.push(structuredClone(o));
+				if (calls.length > pages.length) throw new Error('Extra request');
+				return { statusCode: 200, body: structuredClone(pages[calls.length - 1]) };
+			},
+		},
+	};
+	return { ctx, calls };
+}
+const opts = { method: 'GET', url: 'https://liftaven.com/v1/test?filter=owned', json: true };
+test('Admin lists follow opaque page tokens including omitted empty arrays', async () => {
+	const { ctx, calls } = pagesContext([
+		{ accounts: [{ name: 'a' }], nextPageToken: 'one' },
+		{ nextPageToken: 'two' },
+		{ accounts: [{ name: 'b' }] },
+	]);
+	const result = await requestPages(
+		ctx,
+		'credential',
+		opts,
+		{ pagination: { kind: 'token', items: ['accounts'], pageSize: 200 } },
+		true,
+		50,
+	);
+	assert.deepEqual(result.accounts, [{ name: 'a' }, { name: 'b' }]);
+	assert.deepEqual(
+		calls.map((c) => new URL(c.url).searchParams.get('pageToken')),
+		[null, 'one', 'two'],
+	);
+	assert(calls.every((c) => new URL(c.url).searchParams.get('filter') === 'owned'));
+});
+test('Core/SEO report POST pagination keeps filters and metadata, follows actual offset', async () => {
+	const { ctx, calls } = pagesContext([
+		{
+			rows: [{ v: 1 }, { v: 2 }],
+			dimensionHeaders: ['page'],
+			metadata: { subjectToThresholding: true },
+			pagination: { nextOffset: 2 },
+		},
+		{ rows: [{ v: 3 }], pagination: { hasMore: false } },
+	]);
+	const result = await requestPages(
+		ctx,
+		'credential',
+		{
+			...opts,
+			method: 'POST',
+			body: {
+				dimensionFilter: { owned: true },
+				dateRanges: [{ startDate: '2026-09-01', endDate: '2026-09-30' }],
+			},
+		},
+		{ pagination: { kind: 'report', items: ['rows'], pageSize: 200 } },
+		true,
+		50,
+	);
+	assert.equal(result.rows.length, 3);
+	assert.deepEqual(result.dimensionHeaders, ['page']);
+	assert.equal(result.metadata.subjectToThresholding, true);
+	assert.deepEqual(
+		calls.map((c) => c.body.offset),
+		[0, 2],
+	);
+	assert(calls.every((c) => c.body.dimensionFilter.owned));
+});
+test('Search Console respects actual plan-limited page length', async () => {
+	const { ctx, calls } = pagesContext([
+		{ rows: [1, 2], hasMore: true },
+		{ rows: [3, 4], hasMore: false },
+	]);
+	const result = await requestPages(
+		ctx,
+		'credential',
+		opts,
+		{ pagination: { kind: 'gsc', items: ['rows'], pageSize: 200 } },
+		false,
+		3,
+	);
+	assert.deepEqual(result.rows, [1, 2, 3]);
+	assert.deepEqual(
+		calls.map((c) => new URL(c.url).searchParams.get('offset')),
+		['0', '2'],
+	);
+});
+test('website content merges both pages and posts using provider offsets', async () => {
+	const { ctx, calls } = pagesContext([
+		{ pages: Array.from({ length: 25 }, (_, i) => ({ id: i })), posts: [{ id: 100 }] },
+		{ pages: [{ id: 25 }], posts: [] },
+	]);
+	const result = await requestPages(
+		ctx,
+		'credential',
+		opts,
+		{ pagination: { kind: 'website', items: ['pages', 'posts', 'tree', 'items'], pageSize: 25 } },
+		true,
+		50,
+	);
+	assert.equal(result.pages.length, 26);
+	assert.equal(result.posts.length, 1);
+	assert.equal(new URL(calls[1].url).searchParams.get('offset'), '25');
+});
+test('website repeated pages fail instead of claiming all data was fetched', async () => {
+	const body = { items: Array.from({ length: 100 }, (_, i) => i) };
+	const { ctx } = pagesContext([body, body]);
+	await assert.rejects(
+		requestPages(
+			ctx,
+			'credential',
+			opts,
+			{ pagination: { kind: 'website', items: ['items'], pageSize: 25 } },
+			true,
+			50,
+		),
+		/repeated a page/,
+	);
+});
+test('bounded Bing and realtime reads request the selected limit once', async () => {
+	const { ctx, calls } = pagesContext([{ rows: [1, 2, 3], warnings: ['provider cap'] }]);
+	const result = await requestPages(
+		ctx,
+		'credential',
+		opts,
+		{ pagination: { kind: 'bounded', items: ['rows'], pageSize: 200 } },
+		false,
+		2,
+	);
+	assert.deepEqual(result.rows, [1, 2]);
+	assert.equal(calls.length, 1);
+	assert.equal(new URL(calls[0].url).searchParams.get('limit'), '2');
+	assert.deepEqual(result.warnings, ['provider cap']);
+});
+test('pagination tokens and extra write confirmation are not shown to users', () => {
+	const props = node.description.properties;
+	assert(!props.some((p) => p.name === 'confirmWrite'));
+	for (const p of props) {
+		if (p.name.startsWith('options_') && routes[p.name.slice(8)]?.pagination)
+			assert(!p.options.some((o) => ['limit', 'offset', 'pageToken', 'pageSize'].includes(o.name)));
+	}
+	const resources = props.find((p) => p.name === 'resource').options.map((o) => o.name);
+	assert(resources.includes('Google Analytics'));
+	assert(resources.includes('Bing Webmaster Tools'));
 });
